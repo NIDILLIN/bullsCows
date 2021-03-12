@@ -57,13 +57,16 @@ class programm
 	public static void TutorialCicle()
 	{
 		String[] a = {"1", "2", "3", "1"}; //
-		String[] b = {"A","B","C","D"};    // Tutorial
+		String[] b = {"A","3","1","D"};    // Tutorial
 		String[] c = {" ","^","^"," "};    // Game
 	 	String[] d = {" ","v","v"," "};    // Helpers
 
 		while(Input.equalsIgnoreCase("t") || Input.equals("1")) // Tutorial part, обучаеющее место
 		{
 			msg("=====================================================================");
+			msg("Суть игры состоит в следующем: "); msg("");
+			msg("Игрок вводит комбинации одну за другой, пока не отгадает всю последовательность.");
+			msg("");
 			array.show(d, "?", "tutor"); msg("");
 			array.show(a, "?"); msg("No lines", " Это числа, которые ты ввел"); msg("");
 			array.show(b, "*"); msg("No lines", " Это загадка, то, где будут видны быки и коровы"); msg("");
@@ -169,44 +172,43 @@ class array
 		boolean[] itersCompare = new boolean[4];
 		boolean[] bullsIters = new boolean[4];
 
-		programm.bullscows[0] = 0;
-		programm.bullscows[1] = 0;
+		programm.bullscows[0] = 0; // При вызове метода обнуляем быков
+		programm.bullscows[1] = 0; // и коров
 
 		for (int i = 0; i < 4; i++)
 		{
-			if (arrayInput[i].equals(arraySecret[i])) 
+			if ( arrayInput[i].equals(arraySecret[i]) ) 
 			{
 				itersCompare[i] = true; 
 				if (itersCompare[i] == true)
-					programm.bullscows[1] += 1;
+					programm.bullscows[1] += 1; // Если числа совпадают на позициях -- корова++
 
 			}
-			for (int it = 0; it < 4; it++)
+			for ( int it = 0; it < 4; it++ ) // пробег числа для выявления быков
 			{ 
 				if ( arrayInput[i].equals(arraySecret[it]) ) 
 				{
-					bullsIters[i] = true; programm.bullscows[0] += 1;
+					bullsIters[i] = true; programm.bullscows[0] += 1; 
 				}
 			
 			}	
 		}
 
+
 		if (programm.bullscows[0] >= 4) programm.bullscows[0] = Math.round(programm.bullscows[0] / 2 + 2);
 		// если коров больше 3-х то быки -3
 		// Если два числа в Input одинаковы то быки -1
-		// System.out.println(programm.bullscows[0]); // аутпут быков в консоль
-
 		if (programm.bullscows[1] > 0) programm.cowExists = true; // коровы существуют
 		if (programm.bullscows[0] > 0) programm.bullExists = true; // быки существуют
 
-		// if ( (((itersCompare[0] == itersCompare[1]) == itersCompare[2]) == itersCompare[3]) == true )
+
 
 		if (itersCompare[0] == true && itersCompare[1] == true && itersCompare[2] == true && itersCompare[3] == true)
 			fullCompared = true; // Все числа совпадают
 
 		if (fullCompared) 
 		{
-			programm.arrsNotFullCompared = false; // Если совпадают, то неполное_совпадение false
+			programm.arrsNotFullCompared = false; // Если совпадают, то (неполное_совпадение) false
 		}
 		else
 		{
@@ -219,8 +221,11 @@ class array
 	public static void show(String[] array, String ask) // Показывает массив из 4-х символов, БЕЗ ПЕРЕНОСА СТРОКИ
 	{													// Работает также для разгадки и загадки одновременно без условия
 		//ask = "?" or = "*"							// Что повышает производительность
+
+		// Если быки / коровы существуют, то надо их показать
 		if (ask.equals("*") && programm.cowExists == true) array[2] = Integer.toString(programm.bullscows[1]); // Вывод в буквы кол-во коров
 		if (ask.equals("*") && programm.bullExists == true) array[1] = Integer.toString(programm.bullscows[0]); // Вывод в буквы кол-во быков
+		
 		System.out.printf("-%s%s- ", ask, ask);
 
 		for (int i = 0; i < 4; i++)
