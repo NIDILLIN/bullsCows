@@ -243,9 +243,7 @@ class array
 	}
 
 	public static void show(String[] array, String ask) // Показывает массив из 4-х символов, БЕЗ ПЕРЕНОСА СТРОКИ
-	{													// Работает также для разгадки и загадки одновременно без условия
-		//ask = "?" or = "*"							// Что повышает производительность
-
+	{													
 		// Если быки / коровы существуют, то надо их показать
 		if (ask.equals("*") && programm.cowExists == true) array[2] = Integer.toString(programm.bullscows[1]); // Вывод в буквы кол-во коров
 		if (ask.equals("*") && programm.bullExists == true) array[1] = Integer.toString(programm.bullscows[0]); // Вывод в буквы кол-во быков
@@ -260,7 +258,7 @@ class array
 	};
 
 	public static void show(String[] array, String ask, String tutor) // Показывает массив ( перегруженный, для туториала )
-	{													// Аргумент ни на что не влияет, нужен только для перегрузки метода
+	{
 		System.out.printf("---- ");
 		for (int i = 0; i < 4; i++)
 			System.out.print(array[i] + " "); 
@@ -278,7 +276,7 @@ class array
 
 	public static String[] input() //Ввод пользаком нового массива для разгадки
 	{
-		String viewInput[] = {" ", " ", "*", "*"};
+		String viewInput[] = {"*", "*", "*", "*"};
 		String numsInput; // Вводимая строка
 		int condition = 4; // Стандартный размер массива с символами
 
@@ -293,7 +291,7 @@ class array
 		return viewInput;
 
 	};
-	
+
 	static void checkCheat(String cheat, String input)
 	{
 		if ( itsThatWord(cheat, input) ) programm.cheatVisIsInserted = true;
