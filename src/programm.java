@@ -4,11 +4,11 @@ import java.util.* ;
 // 
 // TO-DO LIST
 // 
-// 1. При ходе игрока, выводистя слева случайная надписьи разбивается построччно на три строки
+// 1. При ходе игрока, выводится справа случайная надписьи разбивается построччно на три строки
 // 
 // 2. Проверить, если в INPUT два одинаковых числа ( бык - 1 )!!!!
 //  А еще это должно быть связано с коровами
-//  Почему ж в игропроме все всегда через жопу, через костыли-то?
+
 
 class programm
 {
@@ -17,42 +17,150 @@ class programm
 	static boolean bullExists = false; // быки не существуют
 	static String Input;
 	static Scanner in = new Scanner(System.in);
-	static int k;
+	static int stepCounter;
+
 	// ======Cheats======
-	static boolean cheatVis; // Чит отладки
-	static boolean cheatSv;  // Чит на упрощение прохождения, вместо букв,
-							 // в третьей строчке будут выбиваться отгаданные числа
+	static boolean cheatVisIsInserted; // Чит отладки
+	// static boolean cheatSv;  // Чит на упрощение прохождения, цифры на своих местах
 	// ======Cheats======
-	public static int[] bullscows = {0, 0};
+
+	static int[] bullscows = {0, 0};
 	static String[] secretMass;    // Генерация секретных чисел
 	static String[] secretSymbs;   // Генерация случайных букв англ. алфавита
 
 
 	public static void main(String[] args) {
-		
+		isThereCheatIn(args, "visChea");
 
-		if (args.length == 1 && args[0].equals("visChea"))
-		{
-			cheatVis = true; // Читы, если включен, отображает отгаданные числа на своей позиции
-			msg("cheat activated");
-		}
+		welcomes();
+		Input = in.next();
 
+		genArrs();
+		StartCicle(); // Ожидает от пользака символа s или "2"
+		TutorialCicle(); // Ожидает "t" или "1"
+
+		msg("Желаем удачи!"); //Если введено "e" или "3"
+	};
+
+
+	static void welcomes()
+	{
 		msg("==========================================");
 		msg("Добро пожаловать в игру \"Быки и Коровы\"!");
 		msg("==========================================");
 		msg("Было загадано 4-х значное число, сможете ли вы его угадать?");
 		msg("");
-		msg("No lines", "Что дальше?  (Tutorial--t) (Start--s) (End--e)  ");
-		Input = in.next();
+		msg("No lines", "Что дальше?  (Tutorial--t / 1) (Start--s / 2) (End--e / 3)  ");
+	};
 
-		genArrs();
-		StartCicle(); // Ожидает от пользака символа s
-		TutorialCicle(); // Ожидает "t"
+	public static boolean get(boolean cheat) 
+	{
+		return cheat;
+	};
 
-		msg("Желаем удачи!");
+	public static boolean changeTo(boolean cheat, boolean arg)
+	{
+		return cheat = arg;
 	};
 
 
+	static void isThereCheatIn(String[] args, String cheat)
+	{
+		if (args.length == 1 && args[0].equals(cheat))
+		{
+			cheatVisIsInserted = true; // Читы, если включен, отображает отгаданные числа на своей позиции
+			msg("cheat activated");
+		}
+	};
+
+	public static void genArrs()
+	{
+		secretMass = array.secretRandomArr(); // Генерация секретных чисел
+		secretSymbs = array.randomSymbStringArr(); // Генерация случайных букв англ. алфавита
+	};
+
+	public static void deleteBullsCows()
+	{
+		bullscows[0] = 0; // Быков стало ноль
+		bullscows[1] = 0; // Коров стало ноль
+	};
+
+
+	public static void msg(String message) // Вывод сообщения на экран консоли
+	{
+		System.out.println(message);
+	};
+
+	public static void msg(String noLines, String message) // Вывод сообщения на экран консоли (!) без новой строки
+	{	
+		System.out.print(message);
+	};
+
+	public static void msg(int message) // Вывод сообщения на экран консоли
+	{
+		System.out.println(message);
+	};
+
+	// int числа 
+	public static void msg(String noLines, int message) // Вывод сообщения на экран консоли (!) без новой строки
+	{	
+		System.out.print(message);
+	};
+
+
+	public static void showArraysInGame(String[] input, String[] symbs, boolean cheatIns)
+	{
+		array.show(input, "?"); msg(""); 
+
+		if (!cheatIns) msg(""); // Если чит не введен -- пустая строка
+
+		array.show(symbs, "*"); msg(""); 
+
+		if(cheatIns) {array.show(secretMass, "^"); msg("");} 
+	};
+
+	public static void StartCicle() // Бесконечный цикл пока будет нажиматься кнопка s
+	{	
+		while( Input.equalsIgnoreCase("s") || Input.equals("2") )
+		{
+
+			if (arrsNotFullCompared == true)
+			{
+				stepCounter++;
+				msg("No lines", "Введите число разгадку: (?) ");
+				String[] inputPolz = array.input(); // Ввод массива для разгадки
+
+				System.out.printf("=================--%d--======================", stepCounter); msg("");
+				array.compare(inputPolz, secretMass); // Сравнение элементов массива с загаданными
+
+	 			showArraysInGame(inputPolz, secretSymbs, cheatVisIsInserted);
+
+				msg("============================================");
+
+				StartCicle();
+
+				
+			} 
+			else gameEnd();			
+		}
+	};
+
+	static void gameEnd()
+	{
+		msg("==========================================");
+		msg("No lines","Молодцы! Партия выйграна за "); msg("No lines", stepCounter); msg(" шаг(а)(ов)!");
+
+		arrsNotFullCompared = true; 
+		genArrs();
+		deleteBullsCows();
+		stepCounter = 0;
+		cheatVisIsInserted = false;
+
+		msg("==========================================");
+		msg("==========================================");
+		msg("No lines", "Что дальше?  (Tutorial--t) (Start--s) (End--e)  ");
+		Input = in.next();
+	};
 
 	public static void TutorialCicle()
 	{
@@ -77,88 +185,6 @@ class programm
 			Input = in.next();
 			if (Input != "t" || Input != "1") StartCicle();
 		}
-	};
-
-	public static void StartCicle() // Бесконечный цикл пока будет нажиматься кнопка s
-	{	
-
-		while(Input.equalsIgnoreCase("s") || Input.equals("2"))
-		{
-
-			if (arrsNotFullCompared == true) // if true
-			{
-				k++;
-				msg("No lines", "Введите число разгадку: (?) ");
-				String[] inputPolz = array.input(); // Ввод массива для разгадки
-				System.out.printf("=================--%d--======================", k); msg("");
-				array.compare(inputPolz, secretMass); // Сравнение элементов массива с загаданными
-
-				//===============SHOW_ROOM================
-				array.show(inputPolz, "?"); msg(""); 
-				if (!cheatVis) msg(""); // Если чит не введен -- пустая строка
-				array.show(secretSymbs, "*"); msg(""); 
-
-				if(cheatVis) {array.show(secretMass, "^"); msg("");} 	 
-				// System.out.println(secretMass[2]);
-				
-				//===============SHOW_ROOM================
-
-				msg("============================================");
-				StartCicle();
-
-				
-			} else 
-			{
-				msg("==========================================");
-				msg("No lines","Молодцы! Партия выйграна за "); msg("No lines", k); msg(" шаг(а)(ов)!");
-
-				arrsNotFullCompared = true; 
-				genArrs();
-				deleteBullsCows();
-				k = 0;
-				cheatVis = false;
-
-				msg("==========================================");
-				msg("==========================================");
-				msg("No lines", "Что дальше?  (Tutorial--t) (Start--s) (End--e)  ");
-				Input = in.next();
-
-			}
-			
-		}
-	};
-
-	public static void genArrs()
-	{
-		secretMass = array.secretRandomArr(); // Генерация секретных чисел
-		secretSymbs = array.randomSymbStringArr(); // Генерация случайных букв англ. алфавита
-	};
-
-	public static void deleteBullsCows()
-	{
-		bullscows[0] = 0; // Быков стало ноль
-		bullscows[1] = 0; // Коров стало ноль
-	};
-
-	public static void msg(String message) // Вывод сообщения на экран консоли
-	{
-		System.out.println(message);
-	};
-
-	public static void msg(String noLines, String message) // Вывод сообщения на экран консоли (!) без новой строки
-	{	
-		System.out.print(message);
-	};
-
-	// int числа 
-	public static void msg(String noLines, int message) // Вывод сообщения на экран консоли (!) без новой строки
-	{	
-		System.out.print(message);
-	};
-
-	public static void msg(int message) // Вывод сообщения на экран консоли
-	{
-		System.out.println(message);
 	};
 
 }
@@ -188,7 +214,7 @@ class array
 			{ 
 				if ( arrayInput[i].equals(arraySecret[it]) ) 
 				{
-					bullsIters[i] = true; programm.bullscows[0] += 1; 
+					bullsIters[i] = true; programm.bullscows[0] += 1;  // быки
 				}
 			
 			}	
@@ -198,7 +224,7 @@ class array
 		if (programm.bullscows[0] >= 4) programm.bullscows[0] = Math.round(programm.bullscows[0] / 2 + 2);
 		// если коров больше 3-х то быки -3
 		// Если два числа в Input одинаковы то быки -1
-		if (programm.bullscows[1] > 0) programm.cowExists = true; // коровы существуют
+		if (programm.bullscows[1] > 0) programm.cowExists = true; programm.bullscows[0] -= programm.bullscows[1]; // коровы существуют
 		if (programm.bullscows[0] > 0) programm.bullExists = true; // быки существуют
 
 
@@ -215,8 +241,6 @@ class array
 			programm.arrsNotFullCompared = true;
 		}
 	}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public static void show(String[] array, String ask) // Показывает массив из 4-х символов, БЕЗ ПЕРЕНОСА СТРОКИ
 	{													// Работает также для разгадки и загадки одновременно без условия
@@ -254,54 +278,25 @@ class array
 
 	public static String[] input() //Ввод пользаком нового массива для разгадки
 	{
-		String Input[] = {" ", " ", "*", "*"};
+		String viewInput[] = {" ", " ", "*", "*"};
 		String numsInput; // Вводимая строка
 		int condition = 4; // Стандартный размер массива с символами
 
 		Scanner in = new Scanner(System.in);
 		numsInput = in.next().toUpperCase(); // Строка с числами, которая в последствии должна быть разъединена
 
-		if (itsThatWord(numsInput, "vis")) // Проверка на ввод чита
-		{
-			if (programm.cheatVis == true) 
-			{
-				Input[0] = "F";
-				Input[1] = "U";		// Таков
-				Input[2] = "C";		// Вывод
-				Input[3] = "K";
-			} else
-			{
-				programm.cheatVis = true;
-				Input[0] = " ";
-				Input[1] = "V";
-				Input[2] = "I";
-				Input[3] = " ";
-			};
-				
-		}
-		// |						|
-		// |						|
-		// V Основная работа метода V
+		checkCheat("vis", numsInput);
 
-		else { // Если чит не найден в введенной строке, то продолжаем игру как играли
+		for (int i = 0; i < numsInput.length(); i++) // Заполнение массива числами. 
+			viewInput[i] = numsInput.substring(i, i + 1); // i-й элемент массива есть строка-символ input-а
 
-			switch (numsInput.length()) // Проверка чтобы избежать exception
-			{							// Избегаю его, потому что просить пользака вводить именно 4 символа
-				case 3: condition = 3;  // не позволит использовать читы без больших костылей
-				break;
+		return viewInput;
 
-				case 2: condition = 2;
-				break;
-
-				case 1: condition = 1; 
-			}	
-
-			for (int i = 0; i < condition; i++) // Заполнение массива числами. 
-				Input[i] = numsInput.substring(i, i + 1); // i-й элемент массива есть строка-символ input-а
-		}
-
-		return Input;
-
+	};
+	
+	static void checkCheat(String cheat, String input)
+	{
+		if ( itsThatWord(cheat, input) ) programm.cheatVisIsInserted = true;
 	};
 
 	public static String[] randomSymbStringArr() // Создает массив из различных цифр-символов по таблице ASCII (рандомно)
@@ -311,7 +306,6 @@ class array
 
 		for (int i = 0; i < 4; i++)
 			newArray[i] = symbols[(int) (Math.random() * 26)]; // 26 -- symbols.length
-			// newArray[i] = symbols[0 + ((int) Math.random() * 24)];
 
 		return newArray;
 	};
