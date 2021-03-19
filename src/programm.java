@@ -17,7 +17,8 @@ class programm
 	static boolean bullExists = false; // быки не существуют
 	static String Input;
 	static Scanner in = new Scanner(System.in);
-	static int stepCounter;
+	static Msg msg = new Msg();
+	static int stepsCounter;
 
 	// ======Cheats======
 	static boolean cheatVisIsInserted; // Чит отладки
@@ -39,18 +40,18 @@ class programm
 		StartCicle(); // Ожидает от пользака символа s или "2"
 		TutorialCicle(); // Ожидает "t" или "1"
 
-		msg("Желаем удачи!"); //Если введено "e" или "3"
+		msg.println("Желаем удачи!"); //Если введено "e" или "3"
 	};
 
 
 	static void welcomes()
 	{
-		msg("==========================================");
-		msg("Добро пожаловать в игру \"Быки и Коровы\"!");
-		msg("==========================================");
-		msg("Было загадано 4-х значное число, сможете ли вы его угадать?");
-		msg("");
-		msg("No lines", "Что дальше?  (Tutorial--t / 1) (Start--s / 2) (End--e / 3)  ");
+		msg.println("============================================");
+		msg.println("Добро пожаловать в игру \"Быки и Коровы\"!");
+		msg.println("============================================");
+		msg.println("Было загадано 4-х значное число, сможете ли вы его угадать?");
+		msg.println("");
+		msg.print("Что дальше?  (Tutorial--t / 1) (Start--s / 2) (End--e / 3)  ");
 	};
 
 	public static boolean get(boolean cheat) 
@@ -69,7 +70,7 @@ class programm
 		if (args.length == 1 && args[0].equals(cheat))
 		{
 			cheatVisIsInserted = true; // Читы, если включен, отображает отгаданные числа на своей позиции
-			msg("cheat activated");
+			msg.println("cheat activated");
 		}
 	};
 
@@ -85,57 +86,33 @@ class programm
 		bullscows[1] = 0; // Коров стало ноль
 	};
 
-
-	public static void msg(String message) // Вывод сообщения на экран консоли
-	{
-		System.out.println(message);
-	};
-
-	public static void msg(String noLines, String message) // Вывод сообщения на экран консоли (!) без новой строки
-	{	
-		System.out.print(message);
-	};
-
-	public static void msg(int message) // Вывод сообщения на экран консоли
-	{
-		System.out.println(message);
-	};
-
-	// int числа 
-	public static void msg(String noLines, int message) // Вывод сообщения на экран консоли (!) без новой строки
-	{	
-		System.out.print(message);
-	};
-
-
 	public static void showArraysInGame(String[] input, String[] symbs, boolean cheatIns)
 	{
-		array.show(input, "?"); msg(""); 
+		array.show(input, "?"); msg.println("");
 
-		if (!cheatIns) msg(""); // Если чит не введен -- пустая строка
+		if (!cheatIns) msg.println(""); // Если чит не введен -- пустая строка
 
-		array.show(symbs, "*"); msg(""); 
+		array.show(symbs, "*"); msg.println("");
 
-		if(cheatIns) {array.show(secretMass, "^"); msg("");} 
+		if(cheatIns) {array.show(secretMass, "^"); msg.println("");}
 	};
 
 	public static void StartCicle() // Бесконечный цикл пока будет нажиматься кнопка s
 	{	
 		while( Input.equalsIgnoreCase("s") || Input.equals("2") )
 		{
-
 			if (arrsNotFullCompared == true)
 			{
-				stepCounter++;
-				msg("No lines", "Введите число разгадку: (?) ");
+				stepsCounter++;
+				msg.print("Введите число разгадку: (?) ");
 				String[] inputPolz = array.input(); // Ввод массива для разгадки
 
-				System.out.printf("=================--%d--======================", stepCounter); msg("");
+				System.out.printf("=================--%d--======================", stepsCounter); msg.println("");
 				array.compare(inputPolz, secretMass); // Сравнение элементов массива с загаданными
 
 	 			showArraysInGame(inputPolz, secretSymbs, cheatVisIsInserted);
 
-				msg("============================================");
+				msg.println("============================================");
 
 				StartCicle();
 
@@ -147,41 +124,41 @@ class programm
 
 	static void gameEnd()
 	{
-		msg("==========================================");
-		msg("No lines","Молодцы! Партия выйграна за "); msg("No lines", stepCounter); msg(" шаг(а)(ов)!");
+		msg.println("============================================");
+		msg.print("Молодцы! Партия выйграна за "); msg.print(stepsCounter); msg.println(" шаг(а)(ов)!");
 
 		arrsNotFullCompared = true; 
 		genArrs();
 		deleteBullsCows();
-		stepCounter = 0;
+		stepsCounter = 0;
 		cheatVisIsInserted = false;
 
-		msg("==========================================");
-		msg("==========================================");
-		msg("No lines", "Что дальше?  (Tutorial--t) (Start--s) (End--e)  ");
+		msg.println("============================================");
+		msg.println("============================================");
+		msg.print("Что дальше?  (Tutorial--t) (Start--s) (End--e)  ");
 		Input = in.next();
 	};
 
 	public static void TutorialCicle()
 	{
-		String[] a = {"1", "2", "3", "1"}; //
-		String[] b = {"A","3","1","D"};    // Tutorial
-		String[] c = {" ","^","^"," "};    // Game
-	 	String[] d = {" ","v","v"," "};    // Helpers
+		String[] d = {" ","v","v"," "}; // Tutorial
+		String[] a = {"1", "2", "3", "1"};
+		String[] b = {"A","3","1","D"};    
+		String[] c = {" ","^","^"," "};
 
 		while(Input.equalsIgnoreCase("t") || Input.equals("1")) // Tutorial part, обучаеющее место
 		{
-			msg("=====================================================================");
-			msg("Суть игры состоит в следующем: "); msg("");
-			msg("Игрок вводит комбинации одну за другой, пока не отгадает всю последовательность.");
-			msg("");
-			array.show(d, "?", "tutor"); msg("");
-			array.show(a, "?"); msg("No lines", " Это числа, которые ты ввел"); msg("");
-			array.show(b, "*"); msg("No lines", " Это загадка, то, где будут видны быки и коровы"); msg("");
-			array.show(c, "*", "tutor"); msg("");
-			msg("=====================================================================");
+			msg.println("=====================================================================");
+			msg.println("Суть игры состоит в следующем: "); msg.println("");
+			msg.println("Игрок вводит комбинации одну за другой, пока не отгадает всю последовательность.");
+			msg.println("");
+			array.show(d, "?", "tutor"); msg.println("");
+			array.show(a, "?"); msg.print("Это числа, которые ты ввел"); msg.println("");
+			array.show(b, "*"); msg.print(" Это загадка, то, где будут видны быки и коровы"); msg.println("");
+			array.show(c, "*", "tutor"); msg.println("");
+			msg.println("=====================================================================");
 
-			msg("No lines", "Что дальше?  (Tutorial--t) (Start--s) (End--e)  ");
+			msg.print("Что дальше?  (Tutorial--t) (Start--s) (End--e)  ");
 			Input = in.next();
 			if (Input != "t" || Input != "1") StartCicle();
 		}
@@ -189,6 +166,29 @@ class programm
 
 }
 
+class Msg
+{
+	public static void println(String message) // Вывод сообщения на экран консоли
+	{
+		System.out.println(message);
+	};
+
+	public static void print(String message) // Вывод сообщения на экран консоли (!) без новой строки
+	{
+		System.out.print(message);
+	};
+
+	public static void println(int message) // Вывод сообщения на экран консоли
+	{
+		System.out.println(message);
+	};
+
+	// int, числа
+	public static void print(int message) // Вывод сообщения на экран консоли (!) без новой строки
+	{
+		System.out.print(message);
+	};
+};
 
 class array
 {
